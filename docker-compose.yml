@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  archive-web:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: acrhive.dockerfile
+    container_name: 'archive-web'
+    image: php:8.1.17-apache-bullseye
+    depends_on:
+      - archive-db
+    ports:
+      - 8000:80
+    volumes:
+      - './:/var/www/html'
+  archive-db:
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    container_name: 'archive-db'
+    image: mysql:5.7
+    ports:
+      - 33061:3306
+    volumes:
+      - './data/mysql:/var/lib/mysql'
