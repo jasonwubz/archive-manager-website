@@ -5376,25 +5376,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      archives: []
+      archives: [],
+      listingMessage: ""
     };
   },
   methods: {
     getArchives: function getArchives() {
       var _this = this;
-      axios.get('api/v1/archive?page=2').then(function (res) {
+      // TODO: get page number
+      var pageNumber = 0;
+      axios.get('api/v1/archive?page=' + pageNumber).then(function (res) {
         _this.archives = res.data.data;
+        if (_this.archives.length == 0) {
+          _this.listingMessage = "\n<div class=\"alert alert-info\" role=\"alert\">\n    <span>\n        <i class=\"fa-solid fa-circle-exclamation\"></i>\n        No archives found. You can add archives to this listing using the \"Upload\" button.\n    </span>\n</div>\n";
+        }
+
+        // update pagination
       })["catch"](function (err) {
-        alert("Unable to get listing, please try again");
+        // alert("Unable to get listing, please try again");
         console.log(err);
+        _this.listingMessage = "\n<div class=\"alert alert-warning\" role=\"alert\">\n    <span>\n        <i class=\"fa-solid fa-triangle-exclamation\"></i>\n        Unable to get listing, please try again\n    </span>\n</div>\n";
       });
     }
   },
   mounted: function mounted() {
+    this.listingMessage = "\n<div class=\"alert alert-info\" role=\"alert\">\n    <div class=\"spinner-border text-info spinner-grow-sm\" role=\"status\">\n        <span class=\"sr-only\"></span>\n    </div>\n    Loading listing...\n</div>\n";
     this.getArchives();
   }
 });
@@ -28231,7 +28247,14 @@ var render = function () {
                 _vm._m(1),
                 _vm._v(" "),
                 !_vm.archives.length
-                  ? _c("tbody", [_vm._m(2)])
+                  ? _c("tbody", [
+                      _c("tr", [
+                        _c("td", {
+                          attrs: { colspan: "100%" },
+                          domProps: { innerHTML: _vm._s(_vm.listingMessage) },
+                        }),
+                      ]),
+                    ])
                   : _c(
                       "tbody",
                       _vm._l(_vm.archives, function (archive, aKey) {
@@ -28242,6 +28265,12 @@ var render = function () {
                           _vm._v(" "),
                           _c("td", [_vm._v("Amet")]),
                           _vm._v(" "),
+                          _c("td", [_vm._v("Amet")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Amet")]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Consectetur")]),
+                          _vm._v(" "),
                           _c("td", [_vm._v("Consectetur")]),
                         ])
                       }),
@@ -28251,7 +28280,7 @@ var render = function () {
             ]),
           ]),
           _vm._v(" "),
-          _vm._m(3),
+          _vm._m(2),
         ]),
       ]),
     ]),
@@ -28289,19 +28318,19 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Lorem")]),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Created At")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ipsum")]),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Filename")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Dolor")]),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Uploaded By")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("MD5 Checksum")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Times Downloaded")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Actions")]),
       ]),
     ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [_c("td", { attrs: { colspan: "4" } }, [_vm._v("Sit")])])
   },
   function () {
     var _vm = this

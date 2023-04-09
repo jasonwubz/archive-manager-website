@@ -14,14 +14,17 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Lorem</th>
-                                        <th scope="col">Ipsum</th>
-                                        <th scope="col">Dolor</th>
+                                        <th scope="col">Created At</th>
+                                        <th scope="col">Filename</th>
+                                        <th scope="col">Uploaded By</th>
+                                        <th scope="col">MD5 Checksum</th>
+                                        <th scope="col">Times Downloaded</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody v-if="!archives.length">
                                     <tr>
-                                        <td colspan="4">Sit</td>
+                                        <td colspan="100%" v-html="listingMessage"></td>
                                     </tr>
                                 </tbody>
                                 <tbody v-else>
@@ -29,6 +32,9 @@
                                         <th scope="row">1</th>
                                         <td>Sit</td>
                                         <td>Amet</td>
+                                        <td>Amet</td>
+                                        <td>Amet</td>
+                                        <td>Consectetur</td>
                                         <td>Consectetur</td>
                                     </tr>
                                 </tbody>
@@ -65,21 +71,52 @@
 <script>
     export default {
         data: () => ({
-            archives : []
+            archives : [],
+            listingMessage : ""
         }),
         methods: {
             getArchives() {
-                axios.get('api/v1/archive?page=2')
+                // TODO: get page number
+                let pageNumber = 0;
+                axios.get('api/v1/archive?page=' + pageNumber)
                 .then((res) => {
                     this.archives = res.data.data;
+                    if (this.archives.length == 0) {
+                        this.listingMessage = `
+<div class="alert alert-info" role="alert">
+    <span>
+        <i class="fa-solid fa-circle-exclamation"></i>
+        No archives found. You can add archives to this listing using the "Upload" button.
+    </span>
+</div>
+`;
+                    }
+
+                    // update pagination
                 })
                 .catch((err) => {
-                    alert("Unable to get listing, please try again");
+                    // alert("Unable to get listing, please try again");
                     console.log(err);
+                    this.listingMessage = `
+<div class="alert alert-warning" role="alert">
+    <span>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Unable to get listing, please try again
+    </span>
+</div>
+`;
                 });
             }
         },
         mounted() {
+            this.listingMessage = `
+<div class="alert alert-info" role="alert">
+    <div class="spinner-border text-info spinner-grow-sm" role="status">
+        <span class="sr-only"></span>
+    </div>
+    Loading listing...
+</div>
+`;
             this.getArchives();
         }
     }
