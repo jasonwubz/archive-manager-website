@@ -16,6 +16,23 @@ class ArchiveController extends Controller
         return ArchiveResource::collection(Archive::paginate(10));
     }
 
+    public function show(Archive $archive)
+    {
+        return new ArchiveResource($archive);
+    }
+
+    public function update(Archive $archive)
+    {
+        // TODO: not implemented because not much to update/edit
+        return response(["error" => "Not implemented"], Response::HTTP_I_AM_A_TEAPOT);
+    }
+
+    public function edit(Archive $archive)
+    {
+        // TODO: not implemented because not much to update/edit
+        return response(["error" => "Not implemented"], Response::HTTP_I_AM_A_TEAPOT);
+    }
+
     public function store(ArchiveStoreRequest $request)
     {
         $archiveFile = $request->file('archive');
