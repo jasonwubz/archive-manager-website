@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Archive Listing
-                        <button type="button" class="btn btn-primary float-right">Upload</button>
+                        <button type="button" class="btn btn-primary float-right" v-b-modal.fileUploadModal>Upload</button>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -70,12 +70,29 @@
                 </div>
             </div>
         </div>
+
+        <b-modal name="fileUploadModal" id="fileUploadModal" hide-footer>
+            <template #modal-header="{ close }">
+            <h5>File Upload</h5>
+            <b-button class="float-right " size="sm" variant="secondary" @click="close()">
+                <i class="fa-sharp fa-solid fa-circle-xmark"></i>
+            </b-button>
+            </template>
+            <div class="content">
+                <drop-file></drop-file>
+            </div>
+        </b-modal>
     </div>
 </template>
 
 <script>
+    import 'bootstrap'
+
     import moment from 'moment'
+    import DropFile from './DropFile.vue';
+
     export default {
+        components: { DropFile },
         data: () => ({
             archives: [],
             listingMessage: "",
