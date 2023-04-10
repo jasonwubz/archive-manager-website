@@ -29,13 +29,14 @@
                                 </tbody>
                                 <tbody v-else>
                                     <tr v-for="(archive, aKey) in archives" :key="aKey">
-                                        <th scope="row">1</th>
-                                        <td>Sit</td>
-                                        <td>Amet</td>
-                                        <td>Amet</td>
-                                        <td>Amet</td>
-                                        <td>Consectetur</td>
-                                        <td>Consectetur</td>
+                                        <th scope="row">{{ archive.id }}</th>
+                                        <td v-dateshow='archive.created_at'></td>
+                                        <td>{{ archive.original_name}}</td>
+                                        <td v-if="archive.user_id">{{ archive.user_id }}</td>
+                                        <td v-else>unknown</td>
+                                        <td>{{ archive.md5_checksum }}</td>
+                                        <td>{{ archive.times_downloaded }}</td>
+                                        <td>Download | Delete</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -44,20 +45,21 @@
                     <div class="card-footer text-muted">
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
-                                <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
+                                <li class="page-item" :class="{disabled : previousPage == 0}">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
                                 </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
+
+                                <li class="page-item" v-for="i in pageCount"><a class="page-link" href="#">{{ i }}</a></li>
+
+                                <li class="page-item disabled" v-if="pageCount == 0"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"  :class="{disabled : nextPage == 0}">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
@@ -72,7 +74,10 @@
     export default {
         data: () => ({
             archives : [],
-            listingMessage : ""
+            listingMessage : "",
+            pageCount: 0,
+            nextPage: 0,
+            previousPage: 0,
         }),
         methods: {
             getArchives() {

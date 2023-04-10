@@ -5382,12 +5382,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       archives: [],
-      listingMessage: ""
+      listingMessage: "",
+      pageCount: 0,
+      nextPage: 0,
+      previousPage: 0
     };
   },
   methods: {
@@ -28259,19 +28264,32 @@ var render = function () {
                       "tbody",
                       _vm._l(_vm.archives, function (archive, aKey) {
                         return _c("tr", { key: aKey }, [
-                          _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v(_vm._s(archive.id)),
+                          ]),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Sit")]),
+                          _c("td", {
+                            directives: [
+                              {
+                                name: "dateshow",
+                                rawName: "v-dateshow",
+                                value: archive.created_at,
+                                expression: "archive.created_at",
+                              },
+                            ],
+                          }),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Amet")]),
+                          _c("td", [_vm._v(_vm._s(archive.original_name))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Amet")]),
+                          archive.user_id
+                            ? _c("td", [_vm._v(_vm._s(archive.user_id))])
+                            : _c("td", [_vm._v("unknown")]),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Amet")]),
+                          _c("td", [_vm._v(_vm._s(archive.md5_checksum))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Consectetur")]),
+                          _c("td", [_vm._v(_vm._s(archive.times_downloaded))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v("Consectetur")]),
+                          _c("td", [_vm._v("Download | Delete")]),
                         ])
                       }),
                       0
@@ -28280,7 +28298,54 @@ var render = function () {
             ]),
           ]),
           _vm._v(" "),
-          _vm._m(2),
+          _c("div", { staticClass: "card-footer text-muted" }, [
+            _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+              _c(
+                "ul",
+                { staticClass: "pagination" },
+                [
+                  _c(
+                    "li",
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.previousPage == 0 },
+                    },
+                    [_vm._m(2)]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.pageCount, function (i) {
+                    return _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        { staticClass: "page-link", attrs: { href: "#" } },
+                        [_vm._v(_vm._s(i))]
+                      ),
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _vm.pageCount == 0
+                    ? _c("li", { staticClass: "page-item disabled" }, [
+                        _c(
+                          "a",
+                          { staticClass: "page-link", attrs: { href: "#" } },
+                          [_vm._v("1")]
+                        ),
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "li",
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.nextPage == 0 },
+                    },
+                    [_vm._m(3)]
+                  ),
+                ],
+                2
+              ),
+            ]),
+          ]),
         ]),
       ]),
     ]),
@@ -28336,59 +28401,32 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-footer text-muted" }, [
-      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
-        _c("ul", { staticClass: "pagination" }, [
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#", "aria-label": "Previous" },
-              },
-              [
-                _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
-                _vm._v(" "),
-                _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")]),
-              ]
-            ),
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("1"),
-            ]),
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("2"),
-            ]),
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
-              _vm._v("3"),
-            ]),
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item" }, [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                attrs: { href: "#", "aria-label": "Next" },
-              },
-              [
-                _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
-                _vm._v(" "),
-                _c("span", { staticClass: "sr-only" }, [_vm._v("Next")]),
-              ]
-            ),
-          ]),
-        ]),
-      ]),
-    ])
+    return _c(
+      "a",
+      {
+        staticClass: "page-link",
+        attrs: { href: "#", "aria-label": "Previous" },
+      },
+      [
+        _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("«")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "sr-only" }, [_vm._v("Previous")]),
+      ]
+    )
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      { staticClass: "page-link", attrs: { href: "#", "aria-label": "Next" } },
+      [
+        _c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("»")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "sr-only" }, [_vm._v("Next")]),
+      ]
+    )
   },
 ]
 render._withStripped = true
