@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::resource('archive', ArchiveController::class);
+    Route::get('archive/{archive}/download', [ArchiveController::class, 'download'])->name('archive.download');
 });

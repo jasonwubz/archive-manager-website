@@ -7,6 +7,7 @@ use App\Http\Requests\ArchiveStoreRequest;
 use App\Http\Resources\V1\ArchiveResource;
 use App\Models\Archive;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ArchiveController extends Controller
 {
@@ -27,5 +28,23 @@ class ArchiveController extends Controller
         ]);
 
         return response(['data' => $archive], Response::HTTP_CREATED);
+    }
+
+    public function destroy(Archive $archive)
+    {
+        // it's possible for files to be orphaned if Storage::delete doesn't work for some reason
+        Storage::delete([$archive->path]);
+        $archive->delete();
+
+        // returning dirty model
+        return response(['data' => $archive], Response::HTTP_ACCEPTED);
+    }
+
+    public function download(Archive $archive)
+    {
+        $archive->times_downloaded++;
+        $archive->update();
+
+        return Storage::download($archive->path, $archive->original_name);
     }
 }

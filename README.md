@@ -38,12 +38,13 @@ The following compoments are added:
 - vue-toast-notification - for toast notifications
 
 ## API Endpoints
-All API Endpoints use the base url `localhost:8000/api/v1/`.
+All API Endpoints use the base url `localhost:8000/api/v1/`. Please include header `Accept:application/json`
 | End Point | Method | Parameters | Description |
 |-----------|--------|------------|-------------|
 |`archive?page=<page_number>`|GET|`<page_number>` - the page number|Gets listing of archives that are uploaded.|
 |`archive`|POST|`archive` - file from local machine to be uploaded|Uploaded selected `.zip` file. The response is the record of the uploaded file.|
-|           |        |            |             |
+|`archive/<id>`|DELETE|`<id>` - ID of the record|Delete both the record and the file from storage permanently.|
+|`archive/<id>/download`|GET|`<id>` - ID of the record|Download the archive.|
 
 ## CURL Example
 Below is what a CURL equivalent of a request response looks like:

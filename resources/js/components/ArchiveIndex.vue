@@ -39,8 +39,14 @@
                                         <td>{{ archive.md5_checksum }}</td>
                                         <td>{{ archive.times_downloaded }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-link"><i class="fa-solid fa-download"></i>Download</button>
-                                            <button type="button" class="btn btn-link"><i class="fa-solid fa-trash-can"></i>Delete</button>
+                                            <a :href="`api/v1/archive/${archive.id}/download`" class="btn btn-link">
+                                                <i class="fa-solid fa-download"></i>
+                                                Download
+                                            </a>
+                                            <button type="button" class="btn btn-link" @click="confirmDelete(archive.id)">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -105,6 +111,32 @@
             moment: moment
         }),
         methods: {
+            confirmDelete(id) {
+                console.log("confirming delete");
+                if (window.confirm("Are you sure you want to delete record #" + id + "?")) {
+                    axios.delete('api/v1/archive/' + id)
+                    .then((res) => {
+                        this.$toast.open(
+                            {
+                                message: "Archive deleted successfully!",
+                                duration: 5000,
+                                type:  'info'
+                            }
+                        );
+                        this.getArchives();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        this.$toast.open(
+                            {
+                                message: "Unable to deleted archive. Please try again",
+                                duration: 5000,
+                                type:  'error'
+                            }
+                        );
+                    });
+                }
+            },
             formatBytes(bytes, decimals = 2) {
                 // from https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
                 if (!+bytes) {
