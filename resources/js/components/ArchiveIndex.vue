@@ -30,13 +30,16 @@
                                 <tbody v-else>
                                     <tr v-for="(archive, aKey) in archives" :key="aKey">
                                         <th scope="row">{{ archive.id }}</th>
-                                        <td v-dateshow='archive.created_at'></td>
+                                        <td>{{ moment(archive.created_at).fromNow() }}</td>
                                         <td>{{ archive.original_name}}</td>
                                         <td v-if="archive.user_id">{{ archive.user_id }}</td>
                                         <td v-else>unknown</td>
                                         <td>{{ archive.md5_checksum }}</td>
                                         <td>{{ archive.times_downloaded }}</td>
-                                        <td>Download | Delete</td>
+                                        <td>
+                                            <button type="button" class="btn btn-link"><i class="fa-solid fa-download"></i>Download</button>
+                                            <button type="button" class="btn btn-link"><i class="fa-solid fa-trash-can"></i>Delete</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -52,7 +55,7 @@
                                     </a>
                                 </li>
 
-                                <li class="page-item" v-for="i in pageCount"><a class="page-link" href="#">{{ i }}</a></li>
+                                <li class="page-item" v-if="pageCount > 1" v-for="i in pageCount"><a class="page-link" href="#">{{ i }}</a></li>
 
                                 <li class="page-item disabled" v-if="pageCount == 0"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item"  :class="{disabled : nextPage == 0}">
@@ -71,13 +74,15 @@
 </template>
 
 <script>
+    import moment from 'moment'
     export default {
         data: () => ({
-            archives : [],
-            listingMessage : "",
+            archives: [],
+            listingMessage: "",
             pageCount: 0,
             nextPage: 0,
             previousPage: 0,
+            moment: moment
         }),
         methods: {
             getArchives() {
