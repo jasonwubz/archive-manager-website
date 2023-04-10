@@ -24,15 +24,18 @@ A web-based archive manager written in Laravel framework. This is only for educa
 
 ## Troubleshooting
 
-## APP_KEY
+### APP_KEY
 If you encounter an error screen about the `APP_KEY`, try `docker exec -i archive-web php artisan config:cache`.
 
-## MAC OS with M1
+### MAC OS with M1
 MySQL image is known to problematic on M1 processors. So in `docker-compose.yml`, you can alternatively use MariaDB:
 ```
 #image: mysql:5.7
 image: mariadb:10.2
 ```
+
+### PHP 7 and older on local machine
+If you have an older version of PHP, you may need to run composer with `--ignore-platform-reqs`
 
 ## Technical Overview
 In this application, I used the following LAMP stack:
