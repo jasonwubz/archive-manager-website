@@ -1,4 +1,4 @@
-## Acrhive Manager
+## Archive Manager
 A web-based archive manager written in Laravel framework. This is only for educational purpose - not suitable for production deployment without heavy configuration.
 
 ## Prerequisites
@@ -21,6 +21,7 @@ A web-based archive manager written in Laravel framework. This is only for educa
 
 5. If you plan to continue development, install npm and its packages: `npm install && npm run dev`
 
+6. Frontend should now be accessible through the browser at `localhost:8000`
 
 ## Troubleshooting
 
@@ -47,7 +48,7 @@ In this application, I used the following LAMP stack:
 - MySQL 5.7
 - PHP 8.1.17
 
-The following compoments are added:
+The following components are added:
 - laravel/ui via composer - for installing Bootstrap CSS and Vue
 - moment - for datetime formatting
 - font awesome - commonly used icons
