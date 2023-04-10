@@ -18,8 +18,8 @@
                                         <th scope="col">Filename</th>
                                         <!-- <th scope="col">Uploaded By</th> -->
                                         <th scope="col">Size</th>
-                                        <th scope="col">MD5 Checksum</th>
-                                        <th scope="col">Times Downloaded</th>
+                                        <th scope="col" class="d-none d-lg-table-cell">MD5 Checksum</th>
+                                        <th scope="col">Downloads</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -32,20 +32,24 @@
                                     <tr v-for="(archive, aKey) in archives" :key="aKey">
                                         <th scope="row">{{ archive.id }}</th>
                                         <td>{{ moment(archive.created_at).fromNow() }}</td>
-                                        <td>{{ archive.original_name}}</td>
+                                        <td class="text-truncate" style="max-width: 150px;" :title="archive.original_name">{{ archive.original_name }}</td>
                                         <!-- <td v-if="archive.user_id">{{ archive.user_id }}</td>
                                         <td v-else>unknown</td> -->
                                         <td>{{ formatBytes(archive.size) }}</td>
-                                        <td>{{ archive.md5_checksum }}</td>
+                                        <td class="d-none d-lg-table-cell">{{ archive.md5_checksum }}</td>
                                         <td>{{ archive.times_downloaded }}</td>
                                         <td>
-                                            <a :href="`api/v1/archive/${archive.id}/download`" class="btn btn-link">
+                                            <a :href="`api/v1/archive/${archive.id}/download`" class="btn btn-link" title="Download">
                                                 <i class="fa-solid fa-download"></i>
-                                                Download
+                                                <span class="d-md-none">
+                                                    Download
+                                                </span>
                                             </a>
-                                            <button type="button" class="btn btn-link" @click="confirmDelete(archive.id)">
+                                            <button type="button" class="btn btn-link" @click="confirmDelete(archive.id)" title="Delete">
                                                 <i class="fa-solid fa-trash-can"></i>
-                                                Delete
+                                                <span class="d-md-none">
+                                                    Delete
+                                                </span>
                                             </button>
                                         </td>
                                     </tr>
@@ -153,7 +157,7 @@
             },
             closeAndRefresh() {
                 this.$refs['fileUploadModal'].hide();
-                this.getArchives();
+                this.getArchives(this.currentPage, true);
             },
             getArchives(pageNumber = 1, force = false) {
                 if (!force && pageNumber == this.currentPage) {
