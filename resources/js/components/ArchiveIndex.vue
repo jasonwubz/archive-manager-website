@@ -14,7 +14,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Created At</th>
+                                        <th scope="col" class="d-none d-lg-table-cell d-md-table-cell">Created At</th>
                                         <th scope="col">Filename</th>
                                         <!-- <th scope="col">Uploaded By</th> -->
                                         <th scope="col">Size</th>
@@ -31,7 +31,7 @@
                                 <tbody v-else>
                                     <tr v-for="(archive, aKey) in archives" :key="aKey">
                                         <th scope="row">{{ archive.id }}</th>
-                                        <td>{{ moment(archive.created_at).fromNow() }}</td>
+                                        <td class="d-none d-lg-table-cell d-md-table-cell">{{ moment(archive.created_at).fromNow() }}</td>
                                         <td class="text-truncate" style="max-width: 150px;" :title="archive.original_name">{{ archive.original_name }}</td>
                                         <!-- <td v-if="archive.user_id">{{ archive.user_id }}</td>
                                         <td v-else>unknown</td> -->
@@ -41,13 +41,13 @@
                                         <td>
                                             <a :href="`api/v1/archive/${archive.id}/download`" class="btn btn-link" title="Download">
                                                 <i class="fa-solid fa-download"></i>
-                                                <span class="d-md-none">
+                                                <span class="d-none d-xl-block">
                                                     Download
                                                 </span>
                                             </a>
                                             <button type="button" class="btn btn-link" @click="confirmDelete(archive.id)" title="Delete">
                                                 <i class="fa-solid fa-trash-can"></i>
-                                                <span class="d-md-none">
+                                                <span class="d-none d-xl-block">
                                                     Delete
                                                 </span>
                                             </button>
