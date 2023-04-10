@@ -3,7 +3,7 @@ A web-based archive manager written in Laravel framework. This is only for educa
 
 ## Prerequisites
 - Docker
-- PHP 8.1.17 (optional on local machine)
+- PHP 8.1.17 (required on local machine to generate app key)
 - Port `8000` and `33061` must be available on the local machine
 
 ## Setup
@@ -11,16 +11,28 @@ A web-based archive manager written in Laravel framework. This is only for educa
     - Database host must be `DB_HOST=archive-db`
     - Do not use `DB_USERNAME=root`, change to a different username.
     - Enter any alphanumeric password in `DB_PASSWORD=`. Do not use special characters such as `$`.
+    - For `APP_KEY`, do not manually create a random value. Use `php artisan key:generate` to generate a new value for `APP_KEY`.
 
-2. (optional) If you have PHP 8.1.17 on local machine, then run `composer install`
+2. Run `docker-compose up -d --build`, this may take a while
 
-3. Run `docker-compose up -d --build`, this may take a while
+3. Run `docker exec -i archive-web composer install`
 
-4. If you skipped #2 then run `docker exec -i archive-web composer install`
+4. Run database migrations `docker exec -i archive-web php artisan migrate`
 
-5. Run database migrations `docker exec -i archive-web php artisan migrate`
+5. If you plan to continue development, install npm and its packages: `npm install && npm run dev`
 
-6. If you plan to continue development, install npm and its packages: `npm install && npm run dev`
+
+## Troubleshooting
+
+## APP_KEY
+If you encounter an error screen about the `APP_KEY`, try `docker exec -i archive-web php artisan config:cache`.
+
+## MAC OS with M1
+MySQL image is known to problematic on M1 processors. So in `docker-compose.yml`, you can alternatively use MariaDB:
+```
+#image: mysql:5.7
+image: mariadb:10.2
+```
 
 ## Technical Overview
 In this application, I used the following LAMP stack:
