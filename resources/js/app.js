@@ -5,9 +5,12 @@
  */
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import ToastPlugin from 'vue-toast-notification';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'vue-toast-notification/dist/theme-bootstrap.css';
+import Vue from 'vue';
 
 require('./bootstrap');
 
@@ -26,7 +29,8 @@ window.Vue = require('vue').default;
 
 Vue.component('archive-index', require('./components/ArchiveIndex.vue').default);
 Vue.use(BootstrapVue);
-Vue.use(IconsPlugin)
+Vue.use(IconsPlugin);
+Vue.use(ToastPlugin);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

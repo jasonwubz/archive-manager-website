@@ -16,7 +16,8 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Created At</th>
                                         <th scope="col">Filename</th>
-                                        <th scope="col">Uploaded By</th>
+                                        <!-- <th scope="col">Uploaded By</th> -->
+                                        <th scope="col">Size</th>
                                         <th scope="col">MD5 Checksum</th>
                                         <th scope="col">Times Downloaded</th>
                                         <th scope="col">Actions</th>
@@ -32,8 +33,9 @@
                                         <th scope="row">{{ archive.id }}</th>
                                         <td>{{ moment(archive.created_at).fromNow() }}</td>
                                         <td>{{ archive.original_name}}</td>
-                                        <td v-if="archive.user_id">{{ archive.user_id }}</td>
-                                        <td v-else>unknown</td>
+                                        <!-- <td v-if="archive.user_id">{{ archive.user_id }}</td>
+                                        <td v-else>unknown</td> -->
+                                        <td>{{ formatBytes(archive.size) }}</td>
                                         <td>{{ archive.md5_checksum }}</td>
                                         <td>{{ archive.times_downloaded }}</td>
                                         <td>
@@ -49,17 +51,17 @@
                         <nav aria-label="Page navigation">
                             <ul class="pagination">
                                 <li class="page-item" :class="{disabled : previousPage == 0}">
-                                    <a class="page-link" href="#" aria-label="Previous">
+                                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="getArchives(currentPage - 1)">
                                         <span aria-hidden="true">&laquo;</span>
                                         <span class="sr-only">Previous</span>
                                     </a>
                                 </li>
 
-                                <li class="page-item" v-if="pageCount > 1" v-for="i in pageCount"><a class="page-link" href="#">{{ i }}</a></li>
+                                <li class="page-item" v-if="pageCount > 1" v-for="i in pageCount"><a class="page-link" :class="{'active' : currentPage == i }" href="#" @click.prevent="getArchives(i)">{{ i }}</a></li>
 
                                 <li class="page-item disabled" v-if="pageCount == 0"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item"  :class="{disabled : nextPage == 0}">
-                                    <a class="page-link" href="#" aria-label="Next">
+                                    <a class="page-link" href="#" aria-label="Next" @click.prevent="getArchives(currentPage + 1)">
                                         <span aria-hidden="true">&raquo;</span>
                                         <span class="sr-only">Next</span>
                                     </a>
@@ -71,7 +73,7 @@
             </div>
         </div>
 
-        <b-modal name="fileUploadModal" id="fileUploadModal" hide-footer>
+        <b-modal ref="fileUploadModal" name="fileUploadModal" id="fileUploadModal" hide-footer>
             <template #modal-header="{ close }">
             <h5>File Upload</h5>
             <b-button class="float-right " size="sm" variant="secondary" @click="close()">
@@ -79,16 +81,16 @@
             </b-button>
             </template>
             <div class="content">
-                <drop-file></drop-file>
+                <drop-file @file-uploaded="closeAndRefresh()"></drop-file>
             </div>
         </b-modal>
     </div>
 </template>
 
 <script>
-    import 'bootstrap'
+    import 'bootstrap';
 
-    import moment from 'moment'
+    import moment from 'moment';
     import DropFile from './DropFile.vue';
 
     export default {
@@ -96,15 +98,36 @@
         data: () => ({
             archives: [],
             listingMessage: "",
+            currentPage: 1,
             pageCount: 0,
             nextPage: 0,
             previousPage: 0,
             moment: moment
         }),
         methods: {
-            getArchives() {
-                // TODO: get page number
-                let pageNumber = 0;
+            formatBytes(bytes, decimals = 2) {
+                // from https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+                if (!+bytes) {
+                    return '0 Bytes';
+                }
+
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+                return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+            },
+            closeAndRefresh() {
+                this.$refs['fileUploadModal'].hide();
+                this.getArchives();
+            },
+            getArchives(pageNumber = 1, force = false) {
+                if (!force && pageNumber == this.currentPage) {
+                    console.log("already on same page");
+                    return;
+                }
                 axios.get('api/v1/archive?page=' + pageNumber)
                 .then((res) => {
                     this.archives = res.data.data;
@@ -120,6 +143,27 @@
                     }
 
                     // update pagination
+                    let pagination = res.data.meta;
+                    let pageLink = res.data.links;
+                    if (pagination.current_page) {
+                        this.currentPage = pagination.current_page;
+                    }
+
+                    if (pagination.last_page) {
+                        this.pageCount = pagination.last_page;
+                    }
+
+                    if (pageLink.prev) {
+                        this.previousPage = this.currentPage - 1;
+                    } else {
+                        this.previousPage = 0;
+                    }
+
+                    if (pageLink.next) {
+                        this.nextPage = this.currentPage + 1;
+                    } else {
+                        this.nextPage = 0;
+                    }
                 })
                 .catch((err) => {
                     // alert("Unable to get listing, please try again");
@@ -136,6 +180,12 @@
             }
         },
         mounted() {
+            // this.$toast.open(
+            //     {
+            //         message: "Toast test!",
+            //         duration: 5000,
+            //     }
+            // );
             this.listingMessage = `
 <div class="alert alert-info" role="alert">
     <div class="spinner-border text-info spinner-grow-sm" role="status">
@@ -144,7 +194,8 @@
     Loading listing...
 </div>
 `;
-            this.getArchives();
+            // force on first load
+            this.getArchives(1, true);
         }
     }
 </script>

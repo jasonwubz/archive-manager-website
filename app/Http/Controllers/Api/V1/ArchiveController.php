@@ -12,7 +12,7 @@ class ArchiveController extends Controller
 {
     public function index(int $page = 0)
     {
-        return ArchiveResource::collection(Archive::paginate($page));
+        return ArchiveResource::collection(Archive::paginate(10));
     }
 
     public function store(ArchiveStoreRequest $request)
