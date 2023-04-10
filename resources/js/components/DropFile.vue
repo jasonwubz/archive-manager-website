@@ -14,6 +14,13 @@
             </div>
 
             <div class="mt-4 justify-content-center text-center" v-if="files.length">
+
+                <div class="alert alert-warning" role="alert" v-if="errorMessage">
+                    <strong>Error(s):</strong>
+                    <br>
+                    {{ errorMessage }}
+                </div>
+
                 <div class="alert alert-secondary" role="alert" v-if="isUploading">
                     <div class="spinner-border text-info spinner-grow-sm" role="status">
                         <span class="sr-only"></span>
@@ -41,11 +48,13 @@ export default {
         return {
             isDragging: false,
             isUploading: false,
+            errorMessage: '',
             files: [],
         };
     },
     methods: {
         uploadFile() {
+            this.errorMessage = '';
             this.isUploading = true;
             const files = this.files;
             const formData = new FormData();
@@ -74,13 +83,26 @@ export default {
             })
             .catch((err) => {
                 this.isUploading = false;
-                console.log(err);
+                if (err.response.data.errors) {
+                    let errorsObj = err.response.data.errors;
+                    //this.errorMessage = JSON.stringify(errorMessages);
+                    for (let key in errorsObj) {
+                        if (errorsObj.hasOwnProperty(key)) {
+                            this.errorMessage += errorsObj[key];
+                        }
+                    }
+                } else {
+                    console.log("unknown error");
+                    console.log(err);
+                }
             });
         },
         onChange() {
+            this.errorMessage = '';
             this.files = [...this.$refs.file.files];
         },
         remove(i) {
+            this.errorMessage = '';
             this.files.splice(i, 1);
         },
         dragover(e) {

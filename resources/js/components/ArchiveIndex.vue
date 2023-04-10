@@ -19,7 +19,7 @@
                                         <!-- <th scope="col">Uploaded By</th> -->
                                         <th scope="col">Size</th>
                                         <th scope="col" class="d-none d-lg-table-cell">MD5 Checksum</th>
-                                        <th scope="col">Downloads</th>
+                                        <th scope="col" class="d-none d-md-table-cell">Downloads</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -37,8 +37,8 @@
                                         <td v-else>unknown</td> -->
                                         <td>{{ formatBytes(archive.size) }}</td>
                                         <td class="d-none d-lg-table-cell">{{ archive.md5_checksum }}</td>
-                                        <td>{{ archive.times_downloaded }}</td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">{{ archive.times_downloaded }}</td>
+                                        <td class="text-nowrap">
                                             <a :href="`api/v1/archive/${archive.id}/download`" class="btn btn-link" title="Download">
                                                 <i class="fa-solid fa-download"></i>
                                                 <span class="d-none d-xl-block">
@@ -127,7 +127,7 @@
                                 type:  'info'
                             }
                         );
-                        this.getArchives();
+                        this.getArchives(this.currentPage, true);
                     })
                     .catch((err) => {
                         console.log(err);
@@ -185,7 +185,7 @@
                         this.currentPage = pagination.current_page;
                     }
 
-                    if (pagination.last_page) {
+                    if (pagination.last_page && pagination.last_page > 1) {
                         this.pageCount = pagination.last_page;
                     }
 
