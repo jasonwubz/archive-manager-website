@@ -34,6 +34,9 @@ MySQL image is known to problematic on M1 processors. So in `docker-compose.yml`
 image: mariadb:10.2
 ```
 
+### Argument #2 ($reportBindings) must be of type bool, null given...
+You didn't run migrations
+
 ### PHP 7 and older on local machine
 If you have an older version of PHP, you may need to run composer with `--ignore-platform-reqs`
 
